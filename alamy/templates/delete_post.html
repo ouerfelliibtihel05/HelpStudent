@@ -1,0 +1,50 @@
+{% extends 'AccueilPartenaire.html' %}
+
+{% block head %}
+{% load static %}
+
+{% endblock %}
+
+{% block body %}
+<form method="post">
+    {% csrf_token %}
+    <div class="card" id="poste-{{ poste.id }}" >
+        <p class="poste-type">{{ poste.get_type_display }}</p>
+        {% if poste.image %}
+        <img src="{{ poste.image.url }}" alt="Image du poste">
+        {% endif %}
+        {% if poste.stage %}
+        
+        <p>Type de stage: {{ poste.stage.get_typeStg_display }}</p>
+        <p>Société: {{ poste.stage.societe }}</p>
+        <p>Durée: {{ poste.stage.duree }}</p>
+        <p>Sujet: {{ poste.stage.sujet }}</p>
+        <p>Description: {{ poste.stage.description }}</p>
+        <p>Lieu: {{ poste.stage.lieu }}</p>
+        {% elif poste.evenement %}
+        
+        <p>Intitulé: {{ poste.evenement.intitule }}</p>
+        <p>Description: {{ poste.evenement.description }}</p>
+        <p>Date: {{ poste.evenement.date }}</p>
+        <p>Lieu: {{ poste.evenement.lieu }}</p>
+        <p>Contact Info: {{ poste.evenement.contactinfo }}</p>
+        {% elif poste.logement %}
+       
+        <p>Localisation: {{ poste.logement.localisation }}</p>
+        <p>Description: {{ poste.logement.description }}</p>
+        <p>Contact Info: {{ poste.logement.contactinfo }}</p>
+        {% elif poste.transport %}
+       
+        <p>Départ: {{ poste.transport.depart }}</p>
+        <p>Destination: {{ poste.transport.destination }}</p>
+        <p>Heure de départ: {{ poste.transport.heuredep }}</p>
+        <p>Contact Info: {{ poste.transport.contactinfo }}</p>
+        {% endif %}
+        <div>
+        <button class="btn-modify" >Supprimer</button>
+        
+        <a href="{% url 'alamy:page_utilisateur' %}" class="btn-delete">Retour</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

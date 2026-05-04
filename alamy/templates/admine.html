@@ -1,0 +1,22 @@
+{% extends 'acceuiladmin.html' %}
+
+{% block body %}
+<div class="card-container">
+    {% for admine in admines %}
+    <div class="card">
+        <p class="poste-type">{{ admine.get_type_display }}</p>
+        {% if admine.image %}
+            <img src="{{ admine.image.url }}" alt="Image du poste">
+        {% endif %}
+        <p class="poste-info">{{ admine.utilisateur.nom }}</p>
+
+        <form action="{% url 'alamy:supprimer_poste' admine.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash"></i> 
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

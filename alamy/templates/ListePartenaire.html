@@ -1,0 +1,114 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Partenaires</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Charger Bootstrap Icons (vérifiez la version appropriée) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    color: #333;
+}
+
+.list-unstyled {
+    list-style: none;
+    padding: 0;
+}
+
+.user-container {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #333;
+}
+
+table {
+    width: 100%;
+}
+
+table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-danger i {
+    margin-right: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-auto">
+                    <a href="{% url 'alamy:admine' %}" class="btn btn-link"><i class="bi bi-chevron-left text-dark"></i></a>
+                    <h3>Liste des Partenaires</h3>
+                </div>
+               
+                <ul class="list-unstyled">
+                    {% for Utilisateur in ListePartenaires %}
+                    <li class="user-container">
+                        <table>
+                            <tr>
+                                <td><span class="user-name">{{ Utilisateur.nom }}</span></td>
+                                <td><span>{{ Utilisateur.prenom }}</span></td>
+                                <td><span>{{ Utilisateur.telephone }}</span></td>
+                                <td><span>{{ Utilisateur.email }}</span></td>
+                                <td>
+                                    <form action="{% url 'alamy:supprimer_user' Utilisateur.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> 
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px auto; /* Centre la carte horizontalement avec un espace de 20px autour */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    max-width: 600px; /* Largeur maximale de la carte */
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.post-detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.post-image img {
+    max-width: 30%;
+    border-radius: 5px;
+}
+
+.post-info {
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+#reaction-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#reaction-form button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+#reaction-form button i {
+    margin-right: 5px;
+}
+
+#reaction-form button.active i {
+    color: blue; /* Couleur des icônes lorsque le bouton est activé */
+}
+
+#comment {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+    padding: 10px;
+    resize: none;
+}
+
+#comment::placeholder {
+    color: #aaa;
+}
+
+#comment:focus {
+    outline: none;
+    border: 1px solid blue; /* Bordure du champ de commentaire lorsqu'il est sélectionné */
+}
+
+.reaction-icon {
+    font-size: 20px;
+}

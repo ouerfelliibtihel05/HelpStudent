@@ -1,0 +1,89 @@
+/* custom.css */
+
+.card-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 500px;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.card h2 {
+    color: #333;
+}
+
+.card p {
+    color: #666;
+}
+
+.poste-info {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.poste-type {
+    font-size: 20px;
+    color: #080707;
+    font-weight: bold;
+    margin-right: auto;
+}
+
+.card img {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.reactions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.reaction-icon {
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.likes-count,
+.dislikes-count,
+.comments-count {
+    font-size: 14px;
+    color: #666;
+    margin-left: 5px;
+}
+
+.comment-icon {
+    margin-left: auto;
+}
+
+.btn-modify,
+.btn-delete {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #87559b; 
+    color: #fff; 
+    text-decoration: none; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+}
+
+.btn-modify:hover,
+.btn-delete:hover {
+    background-color: #383c60; /* Couleur de fond au survol */
+}

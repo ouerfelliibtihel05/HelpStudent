@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>nouveau poste</title>
+    <!-- Inclure les liens vers les fichiers CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+    <!-- Facultatif : vous pouvez inclure votre propre fichier CSS pour les styles personnalisés -->
+    <style>
+        /* Styles pour le formulaire de réservation */
+        form {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.8); /* Arrière-plan transparent */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #6a1a9c;
+            font-family: 'Arial', sans-serif;
+            font-size: 24px;
+        }
+        
+        /* Styles pour les éléments du formulaire */
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="date"],
+        form input[type="time"],
+        form input[type="number"],
+        form input[type="file"],
+        form textarea,
+        form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        form input[type="text"]:focus,
+        form input[type="email"]:focus,
+        form input[type="date"]:focus,
+        form input[type="time"]:focus,
+        form input[type="number"]:focus,
+        form input[type="file"]:focus,
+        form textarea:focus,
+        form select:focus {
+            border-color: #6a1a9c;
+            outline: none;
+        }
+        
+        form button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #8a2be2;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        form button[type="submit"]:hover {
+            background-color: #6a1a9c;
+        }
+        
+        /* Réduction des marges pour les boutons et les titres */
+        button,
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* Styles spécifiques pour le champ de fichier */
+        .custom-file-input {
+            position: relative;
+            width: 100%;
+            height: calc(2.25rem + 2px);
+            margin-bottom: 20px;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .custom-file-input:focus {
+            border-color: #6a1a9c;
+            box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.25);
+            outline: none;
+        }
+        
+        .custom-file-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+        }
+
+        .custom-file-label::after {
+            content: "Choisir un fichier";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+            display: block;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #e9ecef;
+            border-left: inherit;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+            <div class="card-body">
+               
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        {{ form.as_p }}
+                    </div>
+
+             
+              
+
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </form>
+            </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".custom-file-input").on("change", function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        });
+    </script>
+</body>
+</html>

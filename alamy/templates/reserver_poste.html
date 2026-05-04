@@ -1,0 +1,139 @@
+{% block head %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  
+form {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.8); 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    text-align: center;
+    color: #6a1a9c;
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+}
+
+
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form input[type="text"].datepicker,
+form input[type="time"],
+form input[type="number"],
+form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="date"]:focus,
+form input[type="text"].datepicker:focus,
+form input[type="time"]:focus,
+form input[type="number"]:focus,
+form textarea:focus {
+    border-color: #6a1a9c;
+    outline: none;
+}
+
+form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #8a2be2;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #6a1a9c;
+}
+
+
+button,
+h2 {
+    margin-bottom: 20px;
+}
+
+
+form input[type="text"].datepicker {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="text"].datepicker::-webkit-inner-spin-button,
+form input[type="text"].datepicker::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+form input[type="text"].datepicker::before {
+    content: '\1F4C5'; 
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    pointer-events: none;
+    font-size: 16px;
+    color: #333;
+}
+
+
+form input[type="time"],
+form input[type="number"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="time"]::-webkit-inner-spin-button,
+form input[type="number"]::-webkit-inner-spin-button {
+    display: none;
+}
+</style>
+{% endblock %}
+{% block body %}
+<div class="col-auto">
+    <a href="{% url 'alamy:poste' %}" class="btn btn-link"><i class="bi bi-chevron-left text-dark"></i></a>
+</div>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Réserver</button>
+  </form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(function() {
+    $(".datepicker").datepicker({
+        dateFormat: "yy-mm-dd"
+    });
+});
+</script>
+{% endblock %}

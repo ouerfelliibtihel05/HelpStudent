@@ -1,0 +1,157 @@
+
+
+{% block head %}
+    {% load static %}
+    <style>
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        /* Style des labels */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* Style des champs de texte */
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="time"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Style du bouton Enregistrer */
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #87559b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #383c60;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        select {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        /* Style pour le titre */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="type">Type:</label>
+        <select id="type" name="type">
+            <option value="0" {% if poste.type == 0 %}selected{% endif %}>Offre</option>
+            <option value="1" {% if poste.type == 1 %}selected{% endif %}>Demande</option>
+        </select><br><br>
+        {% if poste.image %}
+        <img src="{{ poste.image.url }}" alt="Current Image">
+    {% endif %}
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image"><br><br>
+
+
+        {% if poste.stage %}
+            <!-- Si c'est un stage -->
+            <label for="typeStg">Type de stage:</label>
+            <select id="typeStg" name="typeStg">
+                <option value="1" {% if poste.stage.typeStg == 1 %}selected{% endif %}>Ouvrier</option>
+                <option value="2" {% if poste.stage.typeStg == 2 %}selected{% endif %}>Technicien</option>
+                <option value="3" {% if poste.stage.typeStg == 3 %}selected{% endif %}>PFE</option>
+            </select><br><br>
+            <label for="societe">Société:</label>
+            <input type="text" id="societe" name="societe" value="{{ poste.stage.societe }}"><br><br>
+            <label for="duree">Durée:</label>
+            <input type="number" id="duree" name="duree" value="{{ poste.stage.duree }}"><br><br>
+            <label for="sujet">Sujet:</label>
+            <input type="text" id="sujet" name="sujet" value="{{ poste.stage.sujet }}"><br><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" value="{{ poste.stage.description }}"><br><br>
+            <label for="lieu">Lieu:</label>
+            <input type="text" id="lieu" name="lieu" value="{{ poste.stage.lieu }}"><br><br>
+        {% elif poste.evenement %}
+            <!-- Si c'est un événement -->
+            <label for="intitule">Intitulé:</label>
+            <input type="text" id="intitule" name="intitule" value="{{ poste.evenement.intitule }}"><br><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" value="{{ poste.evenement.description }}"><br><br>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" value="{{ poste.evenement.date }}"><br><br>
+            <label for="lieu">Lieu:</label>
+            <input type="text" id="lieu" name="lieu" value="{{ poste.evenement.lieu }}"><br><br>
+            <label for="contactinfo">Contact Info:</label>
+            <input type="text" id="contactinfo" name="contactinfo" value="{{ poste.evenement.contactinfo }}"><br><br>
+            <label for="contactinfo">Nombre Tickes</label>
+            <input type="nu*" id="nombretickets" name="nombretickets" value="{{ poste.evenement.nombretickets }}"><br><br>
+        {% elif poste.logement %}
+            <!-- Si c'est un logement -->
+            <label for="localisation">Localisation:</label>
+            <input type="text" id="localisation" name="localisation" value="{{ poste.logement.localisation }}"><br><br>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" value="{{ poste.logement.description }}"><br><br>
+            <label for="contactinfo">Nombre Tables4 :</label>
+            <input type="number" id="nombreTables" name="nombreTables" value="{{ poste.logement.nombreTables}}"><br><br>
+            <label for="contactinfo">Contact Info:</label>
+            <input type="text" id="contactinfo" name="contactinfo" value="{{ poste.logement.contactinfo }}"><br><br>
+        {% elif poste.transport %}
+            <!-- Si c'est un transport -->
+            <label for="depart">Départ:</label>
+            <input type="text" id="depart" name="depart" value="{{ poste.transport.depart }}"><br><br>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" value="{{ poste.transport.destination }}"><br><br>
+            <label for="heuredep">Heure de départ:</label>
+            <input type="time" id="heuredep" name="heuredep" value="{{ poste.transport.heuredep|time:'H:i' }}">
+            <label for="contactinfo">Nombre places</label>
+            <input type="number" id="nombreplaces" name="nombreplaces" value="{{ poste.transport.nombreplaces }}"><br><br>
+            <label for="contactinfo">Contact Info:</label>
+            <input type="text" id="contactinfo" name="contactinfo" value="{{ poste.transport.contactinfo }}"><br><br>
+        {% endif %}
+
+        <button type="submit">Enregistrer</button>
+        <button type="submit" onclick="window.location.href='{% url 'alamy:page_utilisateur' %}'">Retour</button>
+
+    </form>
+
+    
+{% endblock %}

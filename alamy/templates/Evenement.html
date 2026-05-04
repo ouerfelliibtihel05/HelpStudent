@@ -1,0 +1,45 @@
+{% extends 'accueuil.html' %}
+
+{% block head %}
+{% load static %}
+
+    <style>
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card-container">
+        {% for evenement  in evenements %}
+            <div class="card">
+                <p class="poste-type">{{ evenement.get_type_display }}</p>
+                {% if evenement.image %}
+                    <img src="{{ evenement.image.url }}" alt="Image du evenement">
+
+                {% endif %}
+                <p class="poste-info">{{ evenement.intitule }}</p> 
+                <p class="poste-info">{{ evenement.date }}</p>
+                <div class="reactions">
+                    <span class="reaction-icon like-icon" data-poste-id="{{ poste.id }}" id="dropdowns-button">&#x1F44D;</span>
+                    <span class="likes-count">{{ poste.likes_count }}</span>
+                    
+                    <span class="reaction-icon dislike-icon" data-post-id="{{ post.id }}" id="dislike-button">&#x1F44E;</span>
+                    <span class="dislikes-count">{{ poste.dislikes_count }}</span>
+        
+                    <span class="reaction-icon comment-icon">&#x1F4AC;</span>
+                    <span class="comments-count">{{ poste.comments_count }}</span>
+                </div>
+                
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                window.location.href = url;
+            });
+        });
+    </script>
+{% endblock %}
+

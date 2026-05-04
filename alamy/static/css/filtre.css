@@ -1,0 +1,117 @@
+
+
+h1 {
+    text-align: center; }
+
+.form-select-lg {
+    width: 50%; }
+
+.btn-lg {
+    width: 400px; 
+    background-color: #87559b; 
+    color: white; 
+    margin-left: 40%;
+    margin-top: 20px;
+}
+
+
+
+
+/* Body styles */
+
+
+/* Titre styles */
+h1 {
+    text-align: center;
+    margin-top: 50px; /* Ajouter de l'espace au-dessus du titre */
+}
+
+/* Styles pour les champs de sélection */
+.form-select {
+    width: 50%;
+    margin-bottom: 10px; /* Espacement entre les champs de sélection */
+}
+
+/* Styles pour les icônes */
+.maison {
+  font-size:4rem ; /* Augmenter la taille des icônes */
+}
+
+/* Styles pour le formulaire */
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.my-custom-class {
+    margin-left: 30px;
+}
+
+
+.form-check-label > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .my-class {
+    margin-left: 30%;
+    margin-top: 20px;
+    padding: 10px;
+  }
+  .form-label {
+    font-size: 30px;
+    font-weight: bold;
+
+  }
+
+
+
+
+
+
+
+
+
+
+  .reservation-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.reservation-item {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.reservation-title {
+    font-weight: bold;
+    color: #65228f; /* Couleur du texte */
+    font-size: 50px; /* Taille du texte */
+}
+
+.reservation-details {
+    list-style-type: none;
+    padding: 0;
+}
+
+.reservation-field {
+    margin-top: 5px;
+    color: #090909; /* Couleur du texte */
+    font-size: 16px; /* Taille du texte */
+}
+
+.no-reservations {
+    font-style: italic;
+    color: #520b98; /* Couleur du texte */
+}
+
+/* Styles supplémentaires */
+.green-text {
+    color: green; /* Couleur du texte verte */
+}
+
+.large-text {
+    font-size: 40px; /* Taille de police plus grande */
+}

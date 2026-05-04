@@ -1,0 +1,79 @@
+{% block body %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    /* Style pour la liste des réservations */
+    .reservation-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    /* Style pour chaque carte de réservation */
+    .reservation-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    /* Style pour le titre de la réservation */
+    .reservation-title {
+        background-color: #87559b;
+        color: #fff;
+        font-size: 1.25rem;
+        padding: 10px;
+        margin: 0;
+    }
+
+    /* Style pour les détails de la réservation */
+    .reservation-details {
+        padding: 20px;
+        background-color: #f9f9f9;
+    }
+
+    /* Style pour chaque champ de réservation */
+    .reservation-field {
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    /* Style pour le message d'absence de réservation */
+    .no-reservations {
+        font-style: italic;
+        color: #666;
+    }
+
+    /* Effet de survol */
+    .reservation-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+{% if reservations %}
+    <ul class="reservation-list">
+        {% for reservation in reservations %}
+            <li class="reservation-card">
+                <h2 class="reservation-title">Réservation</h2>
+                <div class="reservation-details">
+                    {% for field, value in reservation.items %}
+                        {% if field != 'id' %}
+                            <p class="reservation-field"><strong>{{ field }}:</strong> {{ value }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <form action="{% url 'alamy:delete_reservation' reservation.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> 
+                    </button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="no-reservations">Aucune réservation pour ce poste.</p>
+{% endif %}
+{% endblock %}

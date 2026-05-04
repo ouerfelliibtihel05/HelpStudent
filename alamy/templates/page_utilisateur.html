@@ -1,0 +1,209 @@
+{% extends 'AccueilPartenaire.html' %}
+
+{% block head %}
+{% load static %}
+    <style>
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            width: 500px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .card h2 {
+            color: #333;
+        }
+        
+        .card p {
+            color: #666;
+        }
+        
+        .poste-info {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .poste-type {
+            font-size: 20px;
+            color: #080707;
+            font-weight: bold;
+            margin-right: auto;
+        }
+        
+        .card img {
+            width: 100px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .reactions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .reaction-icon {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .likes-count,
+        .dislikes-count,
+        .comments-count {
+            font-size: 14px;
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        .comment-icon {
+            margin-left: auto;
+        }
+        
+        .btn-modify,
+        .btn-delete {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #87559b; 
+            color: #fff; 
+            text-decoration: none; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+        
+        .btn-modify:hover,
+        .btn-delete:hover {
+            background-color: #383c60; /* Couleur de fond au survol */
+        }
+
+        .comments-card {
+            display: none;
+            width: 400px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .comments-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .comments-list li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card-container">
+        {% if publications_utilisateur %}
+            {% for poste in publications_utilisateur %}
+                <div class="card" id="poste-{{ poste.id }}" >
+                    <a href="{% url 'alamy:voir_reservations_poste' poste.id %}"><i class="bi bi-tags-fill text-dark"></i></a>
+                    <p class="poste-type">{{ poste.get_type_display }}</p>
+                    
+
+                    {% if poste.image %}
+                        <img src="{{ poste.image.url }}" alt="Image du poste">
+                    {% endif %}
+                    
+                    {% if poste.stage %}
+                        <p>Type de stage: {{ poste.stage.get_typeStg_display }}</p>
+                        <p>Société: {{ poste.stage.societe }}</p>
+                        <p>Durée: {{ poste.stage.duree }}</p>
+                        <p>Sujet: {{ poste.stage.sujet }}</p>
+                        <p>Description: {{ poste.stage.description }}</p>
+                        <p>Lieu: {{ poste.stage.lieu }}</p>
+                    {% elif poste.evenement %}
+                        <p>Intitulé: {{ poste.evenement.intitule }}</p>
+                        <p>Description: {{ poste.evenement.description }}</p>
+                        <p>Date: {{ poste.evenement.date }}</p>
+                        <p>Lieu: {{ poste.evenement.lieu }}</p>
+                        <p>Contact Info: {{ poste.evenement.contactinfo }}</p>
+                        <p>Nombre Tickets: {{ poste.evenement.nombretickets }}</p>
+                    {% elif poste.logement %}
+                        <p>Localisation: {{ poste.logement.localisation }}</p>
+                        <p>Description: {{ poste.logement.description }}</p>
+                        <p>Contact Info: {{ poste.logement.contactinfo }}</p>
+                    {% elif poste.transport %}
+                        <p>Départ: {{ poste.transport.depart }}</p>
+                        <p>Destination: {{ poste.transport.destination }}</p>
+                        <p>Heure de départ: {{ poste.transport.heuredep }}</p>
+                        <p>Contact Info: {{ poste.transport.contactinfo }}</p>
+                        <p>Nombre Places: {{ poste.transport.nombreplaces}}</p>
+                    {% endif %}
+
+                    <div class="reactions">
+                        <span class="reaction-icon like-icon" data-poste-id="{{ poste.id }}">&#x1F44D;</span>
+                        <span class="likes-count">{{ poste.likes_count }}</span>
+
+                        <span class="reaction-icon dislike-icon" data-post-id="{{ poste.id }}">&#x1F44E;</span>
+                        <span class="dislikes-count">{{ poste.dislikes_count }}</span>
+
+                        <span class="reaction-icon comment-icon" onclick="toggleComments({{ poste.id }})">&#x1F4AC;</span>
+                        <span class="comments-count">{{ poste.comments_count }}</span>
+                    </div>
+                    <div class="comments-card" id="comments-card-{{ poste.id }}">
+                        <ul class="comments-list"></ul>
+                    </div>
+                    <div class="actions">
+                        <form action="{% url 'alamy:modify_post' poste.id %}" method="get" style="display: inline;">
+                            <button type="submit" class="btn-modify">Modifier</button>
+                        </form>
+                        <form action="{% url 'alamy:delete_post' poste.id %}" method="get" style="display: inline;">
+                            <button type="submit" class="btn-delete">Supprimer</button>
+                        </form>
+                        
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune publication pour cet utilisateur.</p>
+        {% endif %}
+    </div>
+    
+    <script>
+        function toggleComments(posteId) {
+            const commentsCard = document.getElementById(`comments-card-${posteId}`);
+            const isVisible = commentsCard.style.display === 'block';
+            commentsCard.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                fetch(`/get_comments/${posteId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const commentsList = commentsCard.querySelector('.comments-list');
+                        commentsList.innerHTML = '';
+                        data.comments.forEach(comment => {
+                            const commentItem = document.createElement('li');
+                            commentItem.textContent = comment.comment;
+                            commentsList.appendChild(commentItem);
+                        });
+                    });
+            }
+        }
+    </script>
+{% endblock %}

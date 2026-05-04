@@ -1,0 +1,9 @@
+
+{% block body %}
+    <h2>Modifier la réservation</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Modifier</button>
+    </form>
+{% endblock %}

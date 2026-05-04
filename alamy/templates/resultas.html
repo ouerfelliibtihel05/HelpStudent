@@ -1,0 +1,46 @@
+{% extends 'accueuil.html' %}
+
+{% block head %}
+    {{ block.super }}
+    <style>
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 300px; 
+        }
+        .poste-type {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .poste-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        .poste-info {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card-container">
+        {% for poste in postes %}
+            <div class="card">
+                <p class="poste-type">{{ poste.get_type_display }}</p>
+                {% if poste.image %}
+                    <img class="poste-image" src="{{ poste.image.url }}" alt="Image du poste">
+                {% endif %}
+                <p class="poste-info">{{ poste.utilisateur.nom }}</p> 
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
