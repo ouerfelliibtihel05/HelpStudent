@@ -1,0 +1,147 @@
+{% extends 'accueuil.html' %}
+
+{% block title %}Chatbot{% endblock %}
+
+{% block styles %}
+<style>
+.chat-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffffcc;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0,0,0,.12);
+}
+.chat-window {
+  min-height: 360px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 520px;
+  background: #f8f9ff;
+}
+.chat-message {
+  margin-bottom: 18px;
+}
+.chat-message.user .message-bubble {
+  background: #d1e7ff;
+  margin-left: auto;
+  text-align: right;
+}
+.chat-message.bot .message-bubble {
+  background: #f1f3ff;
+  margin-right: auto;
+}
+.message-bubble {
+  display: inline-block;
+  padding: 12px 14px;
+  border-radius: 16px;
+  max-width: 85%;
+  line-height: 1.5;
+}
+.chat-form {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}
+.chat-form textarea {
+  flex: 1;
+  min-height: 72px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 12px;
+  resize: vertical;
+}
+.chat-form button {
+  min-width: 120px;
+  border: none;
+  background: #87559b;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.chat-error {
+  color: red;
+  margin-top: 10px;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="chat-container">
+  <h2>Chat with Claude</h2>
+  <div id="chat-window" class="chat-window"></div>
+  <div class="chat-form">
+    <textarea id="chat-input" placeholder="Ask me anything..." rows="3"></textarea>
+    <button id="send-button" type="button">Send</button>
+  </div>
+  <div id="chat-error" class="chat-error"></div>
+</div>
+
+<script>
+const API_URL = '{% url "chatbot:chat_api" %}';
+const CSRF_TOKEN = document.cookie.match('(^|;)\s*csrftoken\s*=\s*([^;]+)')?.pop() || '';
+let history = [];
+
+function renderMessage(role, text) {
+  const chatWindow = document.getElementById('chat-window');
+  const wrapper = document.createElement('div');
+  wrapper.className = `chat-message ${role}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = text;
+  wrapper.appendChild(bubble);
+  chatWindow.appendChild(wrapper);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function setError(message) {
+  document.getElementById('chat-error').textContent = message || '';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  setError('');
+  renderMessage('user', text);
+  history.push({ role: 'user', content: text });
+  input.value = '';
+  const button = document.getElementById('send-button');
+  button.disabled = true;
+  button.textContent = 'Sending...';
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': CSRF_TOKEN,
+      },
+      body: JSON.stringify({ messages: history }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error || 'Something went wrong.');
+    } else {
+      history.push({ role: 'assistant', content: data.reply });
+      renderMessage('bot', data.reply);
+    }
+  } catch (error) {
+    setError(error.message || 'Network error.');
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Send';
+  }
+}
+
+document.getElementById('send-button').addEventListener('click', sendMessage);
+document.getElementById('chat-input').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+</script>
+{% endblock %}

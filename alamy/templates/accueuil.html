@@ -117,7 +117,6 @@
                 </a>
                 </button>
 
-
                 <button type="submit" id="dropdown-button">
                     <span class="bi bi-three-dots-vertical"></span>
                 </button>
@@ -164,5 +163,221 @@
         });
 
     </script>
+    <div id="chat-widget" class="chat-widget">
+        <div class="chat-widget-header">
+            <span>Help Chat</span>
+            <button id="chat-close-button" type="button">×</button>
+        </div>
+        <div id="chat-messages" class="chat-widget-messages"></div>
+        <div id="chat-error" class="chat-widget-error"></div>
+        <div class="chat-widget-input">
+            <textarea id="chat-input" rows="2" placeholder="Type your question..."></textarea>
+            <button id="chat-send-button" type="button">Send</button>
+        </div>
+    </div>
+
+    <button id="chat-open-button" class="chat-open-button">Chat</button>
+
+    <style>
+        .chat-open-button {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 9999;
+            background: #87559b;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 18px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 14px 26px rgba(0,0,0,0.18);
+        }
+        .chat-widget {
+            position: fixed;
+            right: 24px;
+            bottom: 90px;
+            width: 360px;
+            max-width: calc(100% - 48px);
+            height: 500px;
+            background: white;
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10000;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+            font-family: inherit;
+        }
+        .chat-widget.open {
+            display: flex;
+        }
+        .chat-widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: #87559b;
+            color: white;
+            font-weight: 600;
+        }
+        .chat-widget-header button {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .chat-widget-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: #f6f4ff;
+        }
+        .chat-widget-message {
+            margin-bottom: 12px;
+            display: flex;
+        }
+        .chat-widget-message.user {
+            justify-content: flex-end;
+        }
+        .chat-widget-bubble {
+            max-width: 78%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .chat-widget-message.user .chat-widget-bubble {
+            background: #87559b;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+        .chat-widget-message.bot .chat-widget-bubble {
+            background: #ececff;
+            color: #1f1f3d;
+            border-bottom-left-radius: 6px;
+        }
+        .chat-widget-error {
+            color: #b00020;
+            font-size: 13px;
+            padding: 0 16px;
+            min-height: 20px;
+        }
+        .chat-widget-input {
+            display: flex;
+            gap: 10px;
+            padding: 14px 16px 18px;
+            background: white;
+            border-top: 1px solid #ece8ff;
+        }
+        .chat-widget-input textarea {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            padding: 10px 12px;
+            resize: none;
+            font-family: inherit;
+        }
+        .chat-widget-input button {
+            min-width: 88px;
+            background: #87559b;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+        @media (max-width: 640px) {
+            .chat-widget {
+                right: 12px;
+                left: 12px;
+                width: auto;
+                bottom: 80px;
+                height: 460px;
+            }
+        }
+    </style>
+
+    <script>
+        const CHAT_API_URL = '{% url "chatbot:chat_api" %}';
+        const CSRF_TOKEN = document.cookie.match('(^|;)\s*csrftoken\s*=\s*([^;]+)')?.pop() || '';
+        const chatWidget = document.getElementById('chat-widget');
+        const chatOpenButton = document.getElementById('chat-open-button');
+        const chatCloseButton = document.getElementById('chat-close-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendButton = document.getElementById('chat-send-button');
+        const chatError = document.getElementById('chat-error');
+        let history = [];
+
+        function setError(message) {
+            chatError.textContent = message || '';
+        }
+
+        function addMessage(role, text) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-widget-message ${role}`;
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-widget-bubble';
+            bubble.textContent = text;
+            messageEl.appendChild(bubble);
+            chatMessages.appendChild(messageEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            setError('');
+            addMessage('user', text);
+            history.push({ role: 'user', content: text });
+            chatInput.value = '';
+            chatSendButton.disabled = true;
+            chatSendButton.textContent = 'Sending...';
+
+            try {
+                const response = await fetch(CHAT_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF_TOKEN,
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ messages: history }),
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    setError(data.error || 'Chat request failed.');
+                } else {
+                    history.push({ role: 'assistant', content: data.reply });
+                    addMessage('bot', data.reply);
+                }
+            } catch (err) {
+                setError(err.message || 'Network error.');
+            } finally {
+                chatSendButton.disabled = false;
+                chatSendButton.textContent = 'Send';
+            }
+        }
+
+        chatOpenButton.addEventListener('click', () => {
+            chatWidget.classList.add('open');
+            chatOpenButton.style.display = 'none';
+            chatInput.focus();
+        });
+        chatCloseButton.addEventListener('click', () => {
+            chatWidget.classList.remove('open');
+            chatOpenButton.style.display = 'block';
+        });
+        chatSendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+
 </body>
 </html>

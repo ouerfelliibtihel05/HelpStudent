@@ -41,38 +41,41 @@ def index(request):
     return HttpResponse("Première application Django")
 
 def login_user(request):
+    error = None
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         if username == 'alamy' and password == '12345678':
             return redirect('alamy:admine')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('alamy:page_utilisateur')
+
+        email = request.POST.get('email')
+        pass1 = request.POST.get('password1')
+        pass2 = request.POST.get('password2')
+
+        if not email or not pass1 or not pass2:
+            error = "Invalid login credentials or missing registration fields."
+        elif pass1 != pass2:
+            error = "Passwords do not match."
+        elif User.objects.filter(username=username).exists():
+            error = "Username already exists. Please log in or choose another username."
         else:
-            user = authenticate(request, username=username, password=password)
+            my_user = User.objects.create_user(username=username, email=email, password=pass1)
+            Utilisateur.objects.create(
+                nom=username,
+                email=email,
+                motdepasse=pass1
+            )
+            login(request, my_user)
+            return redirect('alamy:page_utilisateur')
 
-            if user is not None:
-                login(request, user)
-                return redirect('alamy:page_utilisateur')
-            else:
-                email = request.POST.get('email')
-                pass1 = request.POST.get('password1')
-                pass2 = request.POST.get('password2')
-
-                if pass1 != pass2:
-                    return HttpResponse("Passwords do not match!")
-                else:
-                    my_user = User.objects.create_user(username=username, email=email, password=pass1)
-
-                    utilisateur = Utilisateur.objects.create(
-                        nom=username, 
-                        email=email,
-                        motdepasse=pass1
-                    )
-
-                    login(request, my_user)
-                    return redirect('alamy:login') 
-
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'error': error})
 
 def accueuil(request):
     return render(request, 'accueuil.html')
